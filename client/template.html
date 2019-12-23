@@ -6,13 +6,46 @@
 	<title>Fly-Scraper</title>
 	<link rel="shortcut icon" href="{$SERVERURL}/client/res/icon.png">
 	<link rel="stylesheet" type="text/css" href="{$SERVERURL}/client/lib/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="{$SERVERURL}/client/lib/bootstrap-datepicker.min.css">
 </head>
 
 <body>
-	Hello, world!
+	<nav class="navbar navbar-light bg-light justify-content-between">
+		<a class="navbar-brand text-primary">
+			<img src="{$SERVERURL}/client/res/icon.png" width="25" height="25" class="d-inline-block" alt="">
+			Fly-Scraper
+		</a>
+	</nav>
+	<div id="div-message" class="alert alert-info" role="alert"
+		style="width:50%; margin:auto; text-align:center; margin-top:20px; display: none;">
+		<!-- Filled by JavaScript -->
+	</div>
+	<div style="text-align: center; margin-left: 25px; margin-right: 25px; margin-top: 15px;">
+		<h3 class="text-success">Add a new flight</h3>
+		<div class="row justify-content-center align-self-center" style="margin-bottom: 25px;">
+			<form class="form-inline" action="{$SERVERURL}/action.php" method="post">
+				<input type="hidden" name="type" value="add">
+				<input class="form-control mr-sm-2" type="text" placeholder="From" name="from" autofocus>
+				<input class="form-control mr-sm-2" type="text" placeholder="To" name="to">
+				<input id="input-depart" class="form-control mr-sm-2" type="text" placeholder="Depart" name="depart">
+				<input id="input-return" class="form-control mr-sm-2" type="text" placeholder="Return" name="return">
+				<select class="form-control" name="cabin">
+					<option selected>Economy</option>
+					<option>Premium Economy</option>
+					<option>Business class</option>
+					<option>First class</option>
+				</select>
+				<input class="form-control mr-sm-2" type="text" placeholder="Travellers" name="travellers">
+				<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Add to watchlist</button>
+			</form>
+		</div>
+		<hr>
+		<h3 class="text-success">Watchlist</h3>
+	</div>
 
 	<script>const SERVERURL = "{$SERVERURL}";</script>
 	<script src="{$SERVERURL}/client/lib/jquery.min.js"></script>
+	<script src="{$SERVERURL}/client/lib/bootstrap-datepicker.min.js"></script>
 	<script src="{$SERVERURL}/client/client.js"></script>
 </body>
 
