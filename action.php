@@ -12,23 +12,45 @@ function handle_request() {
 		die;
 	}
 
-	$list = isset($_POST['list']) && is_numeric($_POST['list']) && strlen($_POST['list']) > 5 ? $_POST['list'] : 0;
-
+	$list = isset($_POST['list']) && is_numeric($_POST['list']) && strlen($_POST['list']) < 5 ? $_POST['list'] : 0;
+	$param = '';
 	switch($_POST['type']) {
 		case 'onload': // Load watchlist data
 			echo load_data($list);
-			break;
+			return;
 		case 'add': // Create new entry
 			try {
-				echo add_entry($list); // echo true if success, else false
+				$param = add_entry($list) ? 'succ_add' : 'fail_add';
 			} catch (Exception $e) {
-				echo false;
+				$param = 'fail_add';
+			}
+			break;
+		case 'delete':
+			break;
+		case 'list':
+			$a = isset($_POST['action']) && is_string($_POST['action']) && strlen($_POST['action']) < 20 ? $_POST['action'] : '';
+			switch ($a) {
+				case 'rename':
+					$param = 'succ_listren';
+					break;
+				case 'add':
+					$param = 'succ_listadd';
+					break;
+				case 'delete':
+					$param = 'succ_listdel';
+					break;
+				default:
+					$param = 'fail_list';
+					break;
 			}
 			break;
 		case 'state': // Load DOM state
 			echo load_lists();
-			break;
+			return;
 	}
+
+	header('Location: ' . (!empty($_ENV['SERVERURL']) ? $_ENV['SERVERURL'] : 'http://localhost:8000') . '/?' . $param);
+	http_response_code(303);
 }
 
 /**

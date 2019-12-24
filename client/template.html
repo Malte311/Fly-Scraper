@@ -16,7 +16,7 @@
 			Fly-Scraper
 		</a>
 	</nav>
-	<div id="div-message" class="alert alert-info" role="alert"
+	<div id="div-message" class="alert" role="alert"
 		style="width:50%; margin:auto; text-align:center; margin-top:20px; display: none;">
 		<!-- Filled by JavaScript -->
 	</div>
@@ -25,14 +25,15 @@
 		<div class="row justify-content-center align-self-center" style="margin-bottom: 25px;">
 			<form class="form-inline" action="{$SERVERURL}/action.php" method="post">
 				<input type="hidden" name="type" value="add">
-				<select id="sel-list1" class="form-control text-primary" name="list">
+				<select id="sel-list1" class="form-control mr-sm-2" name="list">
 					<!-- Filled by JavaScript -->
 				</select>
+				<br>
 				<input class="form-control mr-sm-2" type="text" placeholder="From" name="from" autofocus>
 				<input class="form-control mr-sm-2" type="text" placeholder="To" name="to">
 				<input id="input-depart" class="form-control mr-sm-2" type="text" placeholder="Depart" name="depart">
 				<input id="input-return" class="form-control mr-sm-2" type="text" placeholder="Return" name="return">
-				<select class="form-control" name="cabin">
+				<select class="form-control mr-sm-2" name="cabin">
 					<option selected>Economy</option>
 					<option>Premium Economy</option>
 					<option>Business class</option>
@@ -47,9 +48,13 @@
 		<div class="row justify-content-center align-self-center" style="margin-bottom: 25px;">
 			<form class="form-inline" action="{$SERVERURL}/action.php" method="post">
 				<input type="hidden" name="type" value="list">
-				<select id="sel-list2" class="form-control text-primary" name="list">
+				<input id="sel-listaction" type="hidden" name="action" value="">
+				<select id="sel-list2" class="form-control" name="list">
 					<!-- Filled by JavaScript -->
 				</select>
+				<button class="btn btn-outline-info my-2 my-sm-0" style="margin-left: 5px;" type="submit">Rename list</button>
+				<button class="btn btn-outline-success my-2 my-sm-0" style="margin-left: 5px;" type="submit">Add list</button>
+				<button class="btn btn-outline-danger my-2 my-sm-0" style="margin-left: 5px;" type="submit">Delete list</button>
 			</form>
 			<br>
 		</div>
