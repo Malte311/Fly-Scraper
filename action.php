@@ -66,8 +66,33 @@ function load_lists() {
 }
 
 /**
+ * Renames a given list.
+ * @param int $list The ID of the list which should be renamed.
+ * @param string $newname The new name for the list.
+ */
+function rename_list($list, $newname) {
+
+}
+
+/**
+ * Adds a new list.
+ * @param string $name The name of the list which should be added.
+ */
+function add_list($name) {
+
+}
+
+/**
+ * Deletes a given list.
+ * @param int $list The ID of the list which should be deleted.
+ */
+function delete_list($list) {
+
+}
+
+/**
  * Loads available data.
- * @param int list ID of the list which data should be loaded.
+ * @param int $list ID of the list which data should be loaded.
  * @return array Array of JSON objects for each entry.
  */
 function load_data($list) {
@@ -82,7 +107,7 @@ function load_data($list) {
 
 /**
  * Adds a new entry to the watchlist.
- * @param int list ID of the list to which data should be added.
+ * @param int $list ID of the list to which data should be added.
  * @return bool True if entry was added successfully, else false.
  */
 function add_entry($list) {

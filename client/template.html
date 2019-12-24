@@ -52,9 +52,9 @@
 				<select id="sel-list2" class="form-control" name="list">
 					<!-- Filled by JavaScript -->
 				</select>
-				<button class="btn btn-outline-info my-2 my-sm-0" style="margin-left: 5px;" type="submit">Rename list</button>
-				<button class="btn btn-outline-success my-2 my-sm-0" style="margin-left: 5px;" type="submit">Add list</button>
-				<button class="btn btn-outline-danger my-2 my-sm-0" style="margin-left: 5px;" type="submit">Delete list</button>
+				<button class="btn btn-outline-info my-2 my-sm-0" style="margin-left: 5px;" onclick="$('#sel-listaction').val('rename')" type="submit">Rename list</button>
+				<button class="btn btn-outline-success my-2 my-sm-0" style="margin-left: 5px;" onclick="$('#sel-listaction').val('add')" type="submit">Add list</button>
+				<button class="btn btn-outline-danger my-2 my-sm-0" style="margin-left: 5px;" onclick="$('#sel-listaction').val('delete')" type="submit">Delete list</button>
 			</form>
 			<br>
 		</div>
