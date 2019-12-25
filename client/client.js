@@ -131,6 +131,7 @@ function show_watchlist(data) {
 		let n = header.indexOf(col);
 		hrow += '<th scope="col" num="' + n + '">' + col.charAt(0).toUpperCase() + col.slice(1) + '</th>';
 	}
+	hrow += '<th scope="col" num="' + (header.length + 1) + '">Delete</th>';
 
 	let rows = '';
 	for (entry of JSON.parse(data)) {
@@ -139,7 +140,7 @@ function show_watchlist(data) {
 			for (col of header) {
 				rows += '<td>' + entry[col] + '</td>';
 			}
-			rows += '</tr>';
+			rows += '<td><a href="#" onclick="delete_entry(\'' + entry.id + '\')">&#10060;</a></td></tr>';
 		}
 	}
 
@@ -193,10 +194,29 @@ function delete_list() {
 	let list_name = $("#sel-list2 option:selected").html();
 	let input = confirm('Do you really want to delete "' + list_name + '"?');
 
-	if (input == true) {
+	if (input == true) { // return input
 		return true;
 	} else {
 		return false;
+	}
+}
+
+/**
+ * Deletes an entry.
+ * @param {number} The ID of the entry which should be deleted.
+ */
+function delete_entry(id) {
+	let input = confirm('Do you really want to delete this entry?');
+
+	if (input == true) {
+		let obj = {
+			"type" : "delete",
+			"id": id
+		};
+		$.post(SERVERURL + '/action.php', obj, data => {
+			global_data = JSON.parse(data);
+			show_watchlist(global_data);
+		});
 	}
 }
 

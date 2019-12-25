@@ -8,6 +8,8 @@ handle_request();
  * Handles incoming HTTP requests.
  */
 function handle_request() {
+	global $DATA_FILE;
+
 	if (!isset($_POST['type'])) {
 		die;
 	}
@@ -26,7 +28,9 @@ function handle_request() {
 			}
 			break;
 		case 'delete':
-			break;
+			$param = delete_entry($_POST['id']) ? 'succ_del' : 'fail_del';
+			echo json_encode(file_get_contents($DATA_FILE));
+			return;
 		case 'list':
 			$a = isset($_POST['action']) && is_string($_POST['action']) && strlen($_POST['action']) < 20 ? $_POST['action'] : '';
 			switch ($a) {
@@ -207,9 +211,29 @@ function add_entry($list) {
 
 /**
  * Removes an entry from the watchlist.
+ * @param string $id The ID of the entry which should be deleted.
  */
-function delete_entry() {
+function delete_entry($id) {
+	global $DATA_FILE;
 
+	if (!isset($id) || !is_string($id) || strlen($id) > 50) {
+		return false;
+	}
+
+	if (!file_exists($DATA_FILE)) {
+		return false;
+	} else {
+		$data = json_decode(file_get_contents($DATA_FILE), true);
+		$new_data = array();
+		foreach ($data as $entry) {
+			if (strval($entry['id']) !== strval($id)) {
+				$new_data[] = $entry;
+			}
+		}
+		file_put_contents($DATA_FILE, json_encode($new_data, JSON_PRETTY_PRINT));
+
+		return true;
+	}
 }
 
 ?>
