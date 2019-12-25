@@ -104,7 +104,7 @@ function add_list($name) {
 
 	$file = __DIR__ . '/data/lists.json';
 	$data = json_decode(file_get_contents($file));
-	$last_num = 0;
+	$last_num = -1;
 	foreach ($data as $json) {
 		foreach ($json as $key => $val) {
 			if (intval($val) > $last_num) {
