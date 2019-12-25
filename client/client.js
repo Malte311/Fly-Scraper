@@ -112,3 +112,49 @@ function update_state(data) {
 function show_watchlist(data) {
 	$('#div-watchlist').html(JSON.parse(data));
 }
+
+/**
+ * Renames the currently selected list.
+ */
+function rename_list() {
+	$('#sel-listaction').val('rename'); // Set HTTP Post request action type
+	let list_name = $("#sel-list2 option:selected").html();
+	let input = prompt('Please type in a new name for "' + list_name + '".');
+	
+	if (input != null) {
+		$('#sel-newname').val(input);
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * Adds a new list.
+ */
+function add_list() {
+	$('#sel-listaction').val('add'); // Set HTTP Post request action type
+	let input = prompt('Please type in a name for the new list.');
+
+	if (input != null) {
+		$('#sel-newname').val(input);
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * Deletes the currently selected list.
+ */
+function delete_list() {
+	$('#sel-listaction').val('delete'); // Set HTTP Post request action type
+	let list_name = $("#sel-list2 option:selected").html();
+	let input = confirm('Do you really want to delete "' + list_name + '"?');
+
+	if (input == true) {
+		return true;
+	} else {
+		return false;
+	}
+}

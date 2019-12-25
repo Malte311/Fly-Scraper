@@ -31,13 +31,13 @@ function handle_request() {
 			$a = isset($_POST['action']) && is_string($_POST['action']) && strlen($_POST['action']) < 20 ? $_POST['action'] : '';
 			switch ($a) {
 				case 'rename':
-					$param = 'succ_listren';
+					$param = rename_list($list, $_POST['newname']) ? 'succ_listren' : 'fail_list';
 					break;
 				case 'add':
-					$param = 'succ_listadd';
+					$param = add_list($_POST['newname']) ? 'succ_listadd' : 'fail_list';
 					break;
 				case 'delete':
-					$param = 'succ_listdel';
+					$param = delete_list($list) ? 'succ_listdel' : 'fail_list';
 					break;
 				default:
 					$param = 'fail_list';
@@ -71,7 +71,26 @@ function load_lists() {
  * @param string $newname The new name for the list.
  */
 function rename_list($list, $newname) {
+	if (!is_string($newname) || preg_match('/[^a-zA-Z0-9]/', $newname) || strlen($newname) > 50) {
+		return false;
+	}
 
+	$file = __DIR__ . '/data/lists.json';
+	$data = json_decode(file_get_contents($file));
+	$new_data = array();
+	foreach ($data as $json) {
+		foreach ($json as $key => $val) {
+			if (strval($val) === strval($list)) {
+				$new_data[] = array($newname => $val);
+			} else {
+				$new_data[] = array($key => $val);
+			}
+		}
+	}
+
+	file_put_contents($file, json_encode($new_data, JSON_PRETTY_PRINT));
+
+	return true;
 }
 
 /**
@@ -79,7 +98,25 @@ function rename_list($list, $newname) {
  * @param string $name The name of the list which should be added.
  */
 function add_list($name) {
+	if (!is_string($name) || preg_match('/[^a-zA-Z0-9]/', $name) || strlen($name) > 50) {
+		return false;
+	}
 
+	$file = __DIR__ . '/data/lists.json';
+	$data = json_decode(file_get_contents($file));
+	$last_num = 0;
+	foreach ($data as $json) {
+		foreach ($json as $key => $val) {
+			if (intval($val) > $last_num) {
+				$last_num = intval($val);
+			}
+		}
+	}
+	$data[] = array($name => $last_num + 1);
+
+	file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT));
+
+	return true;
 }
 
 /**
@@ -87,7 +124,20 @@ function add_list($name) {
  * @param int $list The ID of the list which should be deleted.
  */
 function delete_list($list) {
+	$file = __DIR__ . '/data/lists.json';
+	$data = json_decode(file_get_contents($file));
+	$new_data = array();
+	foreach ($data as $json) {
+		foreach ($json as $key => $val) {
+			if (strval($val) !== strval($list)) {
+				$new_data[] = array($key => $val);
+			}
+		}
+	}
 
+	file_put_contents($file, json_encode($new_data, JSON_PRETTY_PRINT));
+
+	return true;
 }
 
 /**
