@@ -110,7 +110,25 @@ function update_state(data) {
  * @param {array} data Array of JSON objects for each watchlist entry.
  */
 function show_watchlist(data) {
-	$('#div-watchlist').html(JSON.parse(data));
+	const header = ['from', 'to', 'depart', 'return', 'cabin', 'travellers'];
+	
+	let hrow = '';
+	for (col of header) {
+		hrow += '<th scope="col">' + col.charAt(0).toUpperCase() + col.slice(1) + '</th>';
+	}
+
+	let rows = '';
+	for (entry of JSON.parse(data)) {
+		rows += '<tr>';
+		for (col of header) {
+			rows += '<td>' + entry[col] + '</td>';
+		}
+		rows += '</tr>';
+	}
+
+	let thead = '<table class="table"><thead class="thead-dark"><tr>' + hrow + '</tr></thead>';
+	let tbody = '<tbody>' + rows + '</tbody></table>';
+	$('#div-watchlist').html(thead + tbody);
 }
 
 /**
