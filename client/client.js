@@ -23,18 +23,28 @@ var global_data = {};
 
 /**
  * Adds datepicker to input fields for selecting dates.
+ * @param {string} startDate The start date of the second datepicker
+ * (the second date can only be after the first one).
  */
-function add_datepicker() {
+function add_datepicker(startDate = null) {
 	$('#input-depart').datepicker({
 		format: 'yyyy-mm-dd',
 		todayHighlight: true,
 		autoclose: true
 	});
 
+	$('#input-depart').change(() => {
+		$('#input-return').datepicker('remove');
+		add_datepicker($('#input-depart').val());
+	});
+
+	let date = new Date(startDate);
+	date.setDate(date.getDate() + 1);
 	$('#input-return').datepicker({
 		format: 'yyyy-mm-dd',
 		todayHighlight: true,
-		autoclose: true
+		autoclose: true,
+		startDate: date
 	});
 }
 
@@ -147,6 +157,10 @@ function show_watchlist(data) {
 	let thead = '<table id="tab" class="table table-striped"><thead class="thead-dark"><tr>' + hrow + '</tr></thead>';
 	let tbody = '<tbody>' + rows + '</tbody></table>';
 	$('#div-watchlist').html(thead + tbody);
+
+	if (rows == '') { // No entries yet
+		$('#div-watchlist').append('So far, there are no entries.');
+	}
 
 	$(`#tab thead tr th`).each(function() { // function for this binding
 		$(this).click(() => {

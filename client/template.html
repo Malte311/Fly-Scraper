@@ -9,9 +9,9 @@
 	<link rel="stylesheet" type="text/css" href="{$SERVERURL}/client/lib/bootstrap-datepicker.min.css">
 </head>
 
-<body>
-	<nav class="navbar navbar-light bg-light justify-content-between">
-		<a class="navbar-brand text-primary">
+<body class="bg-light">
+	<nav class="navbar navbar-dark bg-secondary justify-content-between">
+		<a class="navbar-brand text-light">
 			<img src="{$SERVERURL}/client/res/icon.png" width="25" height="25" class="d-inline-block" alt="">
 			Fly-Scraper
 		</a>
@@ -21,7 +21,7 @@
 		<!-- Filled by JavaScript -->
 	</div>
 	<div style="text-align: center; margin-left: 25px; margin-right: 25px; margin-top: 15px;">
-		<h3 class="text-success">Add a new flight</h3>
+		<h3 class="text-dark">Add a new flight</h3>
 		<div class="row justify-content-center align-self-center" style="margin-bottom: 25px;">
 			<form class="form-inline" action="{$SERVERURL}/action.php" method="post">
 				<input type="hidden" name="type" value="add">
@@ -33,7 +33,7 @@
 				<input class="form-control mr-sm-2" type="text" placeholder="To" name="to">
 				<input id="input-depart" class="form-control mr-sm-2" type="text" placeholder="Depart" name="depart">
 				<input id="input-return" class="form-control mr-sm-2" type="text" placeholder="Return" name="return">
-				<select class="form-control mr-sm-2" name="cabin">
+				<select class="form-control text-dark mr-sm-2" name="cabin">
 					<option selected>Economy</option>
 					<option>Premium Economy</option>
 					<option>Business class</option>
@@ -44,16 +44,16 @@
 			</form>
 		</div>
 		<hr>
-		<h3 class="text-success">Watchlist</h3>
+		<h3 class="text-dark">Watchlist</h3>
 		<div class="row justify-content-center align-self-center" style="margin-bottom: 25px;">
 			<form class="form-inline" action="{$SERVERURL}/action.php" method="post">
 				<input type="hidden" name="type" value="list">
 				<input id="sel-listaction" type="hidden" name="action" value="">
 				<input id="sel-newname" type="hidden" name="newname" value="">
-				<select id="sel-list2" class="form-control" name="list">
+				<select id="sel-list2" class="form-control text-dark" name="list">
 					<!-- Filled by JavaScript -->
 				</select>
-				<button class="btn btn-outline-info my-2 my-sm-0" style="margin-left: 5px;" onclick="return rename_list()" type="submit">Rename list</button>
+				<button class="btn btn-outline-dark my-2 my-sm-0" style="margin-left: 5px;" onclick="return rename_list()" type="submit">Rename list</button>
 				<button class="btn btn-outline-success my-2 my-sm-0" style="margin-left: 5px;" onclick="return add_list()" type="submit">Add list</button>
 				<button class="btn btn-outline-danger my-2 my-sm-0" style="margin-left: 5px;" onclick="return delete_list()" type="submit">Delete list</button>
 			</form>
