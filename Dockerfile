@@ -25,4 +25,6 @@ COPY --chown=www-data:www-data ./action.php /php-code/action.php
 COPY --chown=www-data:www-data ./data/ /php-code/data/
 COPY --chown=www-data:www-data ./client/ /php-code/client/
 
+COPY ./setup.sh /startup-before.sh
+
 ENV PROD=prod
