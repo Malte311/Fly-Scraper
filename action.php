@@ -75,7 +75,7 @@ function load_lists() {
  * @param string $newname The new name for the list.
  */
 function rename_list($list, $newname) {
-	if (!is_string($newname) || preg_match('/[^a-zA-Z0-9]/', $newname) || strlen($newname) > 50) {
+	if (!is_string($newname) || preg_match('/[^a-zA-Z0-9 ]/', $newname) || strlen($newname) > 50) {
 		return false;
 	}
 
@@ -102,7 +102,7 @@ function rename_list($list, $newname) {
  * @param string $name The name of the list which should be added.
  */
 function add_list($name) {
-	if (!is_string($name) || preg_match('/[^a-zA-Z0-9]/', $name) || strlen($name) > 50) {
+	if (!is_string($name) || preg_match('/[^a-zA-Z0-9 ]/', $name) || strlen($name) > 50) {
 		return false;
 	}
 
