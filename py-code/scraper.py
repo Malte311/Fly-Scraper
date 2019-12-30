@@ -24,9 +24,9 @@ def get_info(flight, errCount = -1):
 		raise Exception(f'No success for flight id {flight["id"]}')
 
 	try:
-		url = ''
-		page = requests.get(url, headers={'User-Agent': user_agent})
-		soup = BeautifulSoup(page.content, 'html.parser')
+		url = 'https://www.google.de/flights'
+		# page = requests.get(url, headers={'User-Agent': user_agent})
+		# soup = BeautifulSoup(page.content, 'html.parser')
 	except Exception:
 		errCount += 1
 		time.sleep(random.randint(15, 45))

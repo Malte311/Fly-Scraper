@@ -1,0 +1,13 @@
+version: "2"
+
+services:
+  web:
+    image: malte311/fly-scraper:latest
+    container_name: fly-scraper
+    ports:
+      - "127.0.0.1:8080:80"
+    volumes:
+      - ./data/:/php-code/data/
+    restart: always
+    environment:
+      - SERVERURL=https://example.com/fly-scraper
