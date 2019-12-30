@@ -22,8 +22,7 @@ RUN apk add --update --no-cache python3 \
 COPY --chown=www-data:www-data ./py-code/ /py-code/
 COPY --chown=www-data:www-data ./index.php /php-code/index.php
 COPY --chown=www-data:www-data ./action.php /php-code/action.php
-COPY --chown=www-data:www-data ./data/entries.json /php-code/data/entries.json
-COPY --chown=www-data:www-data ./data/lists.json /php-code/data/lists.json
+COPY --chown=www-data:www-data ./data/ /php-code/data/
 COPY --chown=www-data:www-data ./client/ /php-code/client/
 
 ENV PROD=prod
