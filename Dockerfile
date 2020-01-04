@@ -2,7 +2,7 @@ FROM kimbtechnologies/php_nginx:latest
 
 RUN apk add --update --no-cache python3 \
 	&& pip3 install selenium \
-	&& apk update && apk add chromium=62.0.3202.89-1~deb9u1 \
+	&& apk add chromium=62.0.3202.89-1 \
 	&& mkdir /py-code/ \
 	&& chown -R www-data:www-data /py-code/ \
 	&& mkdir /php-code/data/ \
