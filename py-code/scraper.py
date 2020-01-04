@@ -2,9 +2,9 @@ import datetime
 import json
 import os
 import random
-import requests
 import time
-from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
 USER_AGENTS = [
 	'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36',
@@ -23,14 +23,22 @@ def get_info(flight, errCount = -1):
 		put_info(flight, {}) # mark as not successful
 		raise Exception(f'No success for flight id {flight["id"]}')
 
+	url = 'https://www.google.de/flights#flt=/m/03hrz.FNC.2020-01-20*FNC./m/03hrz.2020-01-24;c:EUR;e:1;sd:1;t:f'
+	chrome_options = Options()
+	chrome_options.add_argument("--headless")
+	driver = webdriver.Chrome(executable_path='drivers/chromedriver', options=chrome_options)
+
 	try:
-		url = 'https://www.google.de/flights'
-		# page = requests.get(url, headers={'User-Agent': user_agent})
-		# soup = BeautifulSoup(page.content, 'html.parser')
+		driver.get(url)
+		time.sleep(3)
+		write_log(driver.find_element_by_class_name('gws-flights-results__price'))
+		
 	except Exception:
 		errCount += 1
 		time.sleep(random.randint(15, 45))
 		get_info(flight, errCount)
+	finally:
+		driver.close()
 
 def put_info(flight, info):
 	file_name = '../data/' + str(flight['id']) + '.json'
