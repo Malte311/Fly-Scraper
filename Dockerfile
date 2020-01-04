@@ -1,7 +1,8 @@
 FROM kimbtechnologies/php_nginx:latest
 
 RUN apk add --update --no-cache python3 \
-	&& pip3 install requests bs4 \
+	&& pip3 install selenium \
+	&& apt-get install -yq chromium=62.0.3202.89-1~deb9u1 \
 	&& mkdir /py-code/ \
 	&& chown -R www-data:www-data /py-code/ \
 	&& mkdir /php-code/data/ \
@@ -18,6 +19,13 @@ RUN apk add --update --no-cache python3 \
 		return 403; \n\
 	} \n\
 	' > /etc/nginx/more-server-conf.conf
+
+RUN wget -q "https://chromedriver.storage.googleapis.com/2.35/chromedriver_linux64.zip" -O /tmp/chromedriver.zip \
+    && unzip /tmp/chromedriver.zip -d /py-code/drivers/chromedriver \
+    && rm /tmp/chromedriver.zip
+
+RUN ln -s /usr/bin/chromium-browser \
+    && chmod 777 /usr/bin/chromium-browser
 
 COPY --chown=www-data:www-data ./py-code/ /py-code/
 COPY --chown=www-data:www-data ./index.php /php-code/index.php
