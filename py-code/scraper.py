@@ -41,7 +41,7 @@ def get_info(flight, errCount = -1):
 		driver.close()
 
 def put_info(flight, info):
-	file_name = '../data/' + str(flight['id']) + '.json'
+	file_name = path_prefix() + str(flight['id']) + '.json'
 	if not os.path.isfile(file_name):
 			data = {}
 	else:
@@ -59,7 +59,7 @@ def create_date():
 	return today
 
 def write_log(msg):
-	log_file = '../data/log.log'
+	log_file = path_prefix() + 'log.log'
 	timestamp = datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
 	if not os.path.isfile(log_file):
 		with open(log_file, 'w+') as file:
@@ -67,3 +67,9 @@ def write_log(msg):
 	else:
 		with open(log_file, 'a') as file:
 			file.write(f'{timestamp} \r\n {msg} \r\n')
+
+def path_prefix():
+	if os.environ['PROD'] == 'prod':
+		return '../php-code/data/'
+	else:
+		return '../data/'

@@ -2,8 +2,9 @@ FROM kimbtechnologies/php_nginx:latest
 
 RUN apk add --update --no-cache python3 \
 	&& pip3 install selenium \
-	&& apk add chromium=62.0.3202.89-1 \
+	&& apk add chromium \
 	&& mkdir /py-code/ \
+	&& mkdir /py-code/drivers/ \
 	&& chown -R www-data:www-data /py-code/ \
 	&& mkdir /php-code/data/ \
 	&& chown -R www-data:www-data /php-code/data/ \
@@ -20,8 +21,8 @@ RUN apk add --update --no-cache python3 \
 	} \n\
 	' > /etc/nginx/more-server-conf.conf
 
-RUN wget -q "https://chromedriver.storage.googleapis.com/2.35/chromedriver_linux64.zip" -O /tmp/chromedriver.zip \
-    && unzip /tmp/chromedriver.zip -d /py-code/drivers/chromedriver \
+RUN wget -q "https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip" -O /tmp/chromedriver.zip \
+    && unzip /tmp/chromedriver.zip -d /py-code/drivers/ \
     && rm /tmp/chromedriver.zip
 
 RUN ln -s /usr/bin/chromium-browser \
