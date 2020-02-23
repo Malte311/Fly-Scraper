@@ -1,8 +1,8 @@
 var global_data = {};
 
-(function() {
+$(function() {
 	'use strict';
-
+	console.log("Test");
 	add_datepicker();
 
 	add_listener();
@@ -11,15 +11,18 @@ var global_data = {};
 
 	// SERVERURL is defined in the environment and written by the PHP script
 	$.post(SERVERURL + '/action.php', 'type=state', data => {
-		update_state(JSON.parse(data)); // Adds options for select elements dynamically
+		update_state(data); // Adds options for select elements dynamically
 	});
 
-	$.post(SERVERURL + '/action.php', 'type=onload', data => {
-		global_data = JSON.parse(data);
-		show_watchlist(JSON.parse(data)); // Loads all items from the watchlist
+	$.post(SERVERURL + '/action.php', { 'type' : 'onload' }, data => {
+		if( typeof data === "string" ){
+			data = JSON.parse(data);
+		}
+		global_data = data;
+		show_watchlist(data); // Loads all items from the watchlist
 	});
 
-})();
+});
 
 /**
  * Adds datepicker to input fields for selecting dates.
@@ -144,7 +147,7 @@ function show_watchlist(data) {
 	hrow += '<th scope="col" num="' + (header.length + 1) + '">Delete</th>';
 
 	let rows = '';
-	for (entry of JSON.parse(data)) {
+	for (entry of data) {
 		if (parseInt(entry.list) === parseInt($('#sel-list2').val())) {
 			rows += '<tr>';
 			for (col of header) {
