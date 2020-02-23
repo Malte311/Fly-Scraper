@@ -2,29 +2,32 @@ var global_data = {};
 
 $(function() {
 	'use strict';
-	console.log("Test");
+
 	add_datepicker();
 
 	add_listener();
 
 	show_info();
 
-	// SERVERURL is defined in the environment and written by the PHP script
-	$.post(SERVERURL + '/action.php', { 'type' : 'state' }, data => {
-		if( typeof data === "string" ){
-			data = JSON.parse(data);
-		}
-		update_state(data); // Adds options for select elements dynamically
-
-		$.post(SERVERURL + '/action.php', { 'type' : 'onload' }, data => {
-			if( typeof data === "string" ){
-				data = JSON.parse(data);
-			}
-			global_data = data;
-			show_watchlist(data); // Loads all items from the watchlist
-		});
-	});
+	load_page();
 });
+
+/**
+ * Loads the page.
+ */
+async function load_page() {
+	// SERVERURL is defined in the environment and written by the PHP script
+	let stateData = await Promise.resolve(
+		$.post(SERVERURL + '/action.php', $.param({'type': 'state'}))
+	);
+	update_state(JSON.parse(stateData)); // Adds options for select elements dynamically
+
+	let data = await Promise.resolve(
+		$.post(SERVERURL + '/action.php', $.param({'type': 'onload'}))
+	);
+	global_data = JSON.parse(data);
+	show_watchlist(global_data); // Loads all items from the watchlist
+}
 
 /**
  * Adds datepicker to input fields for selecting dates.
