@@ -10,18 +10,20 @@ $(function() {
 	show_info();
 
 	// SERVERURL is defined in the environment and written by the PHP script
-	$.post(SERVERURL + '/action.php', 'type=state', data => {
-		update_state(data); // Adds options for select elements dynamically
-	});
-
-	$.post(SERVERURL + '/action.php', { 'type' : 'onload' }, data => {
+	$.post(SERVERURL + '/action.php', { 'type' : 'state' }, data => {
 		if( typeof data === "string" ){
 			data = JSON.parse(data);
 		}
-		global_data = data;
-		show_watchlist(data); // Loads all items from the watchlist
-	});
+		update_state(data); // Adds options for select elements dynamically
 
+		$.post(SERVERURL + '/action.php', { 'type' : 'onload' }, data => {
+			if( typeof data === "string" ){
+				data = JSON.parse(data);
+			}
+			global_data = data;
+			show_watchlist(data); // Loads all items from the watchlist
+		});
+	});
 });
 
 /**
@@ -125,7 +127,7 @@ function show_message(msg, color) {
  * @param {array} data Array of JSON objects containing the DOM state represenation.
  */
 function update_state(data) {
-	for (list of JSON.parse(data)) {
+	for (list of data) {
 		let keys = Object.keys(list);
 		$('#sel-list1').append(new Option(keys[0], list[keys[0]]));
 		$('#sel-list2').append(new Option(keys[0], list[keys[0]]));
