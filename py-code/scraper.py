@@ -2,27 +2,15 @@ import datetime
 import json
 import os
 import random
+import re
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-USER_AGENTS = [
-	'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36',
-	'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18362',
-	'Mozilla/5.0 (Windows NT 6.1; rv:60.0) Gecko/20100101 Firefox/60.0'
-]
-
-def get_info(flight, errCount = -1):
-	global USER_AGENTS
-
-	if errCount < 0:
-		user_agent = random.choice(USER_AGENTS)
-	elif errCount < len(USER_AGENTS):
-		user_agent = USER_AGENTS[errCount]
-	else:
-		put_info(flight, {}) # mark as not successful
-		raise Exception(f'No success for flight id {flight["id"]}')
-
+def get_info(flight):
 	url = 'https://www.google.de/flights#flt=/m/03hrz.FNC.2020-01-20*FNC./m/03hrz.2020-01-24;c:EUR;e:1;sd:1;t:f'
 	chrome_options = Options()
 	chrome_options.add_argument("--headless")
@@ -31,12 +19,15 @@ def get_info(flight, errCount = -1):
 	try:
 		driver.get(url)
 		time.sleep(3)
-		write_log(driver.find_element_by_class_name('gws-flights-results__price'))
+
+		info = {}
+		results = driver.find_elements_by_css_selector('.gws-flights-results__itinerary-card')
+		for res in results:
+			print(re.split('[\n\r]+', res))
 		
 	except Exception:
-		errCount += 1
-		time.sleep(random.randint(15, 45))
-		get_info(flight, errCount)
+		put_info(flight, {}) # mark as not successful
+		raise Exception(f'No success for flight id {flight["id"]}')
 	finally:
 		driver.close()
 
