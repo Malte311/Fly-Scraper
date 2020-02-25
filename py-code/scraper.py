@@ -6,12 +6,9 @@ import re
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 def get_info(flight):
-	url = 'https://www.google.de/flights#flt=/m/03hrz.FNC.2020-01-20*FNC./m/03hrz.2020-01-24;c:EUR;e:1;sd:1;t:f'
+	url = 'https://www.google.de/flights#flt=/m/03hrz.FNC.2020-05-03*FNC./m/03hrz.2020-05-31;c:EUR;e:1;sd:1;t:f'
 	chrome_options = Options()
 	chrome_options.add_argument("--headless")
 	driver = webdriver.Chrome(executable_path='drivers/chromedriver', options=chrome_options)
@@ -20,15 +17,20 @@ def get_info(flight):
 		driver.get(url)
 		time.sleep(3)
 
-		info = {}
-		results = driver.find_elements_by_css_selector('.gws-flights-results__itinerary-card')
-		for res in results:
-			data = re.split('[\n\r]+', res.text)
-			airline = data[1]
-			duration = data[2]
-			stops = data[4]
-			stay = data[5]
-			price = data[6]
+		results = []
+		flights = driver.find_elements_by_css_selector('.gws-flights-results__itinerary-card')
+		for flightRes in flights:
+			print(flightRes.text)
+			resObj = {}
+			data = re.split('[\n\r]+', flightRes.text)
+			resObj['airline'] = data[1]
+			resObj['duration'] = data[2]
+			resObj['stops'] = data[4]
+			resObj['stay'] = data[5]
+			resObj['price'] = data[6]
+			results.append(resObj)
+
+		put_info(flight, results)
 		
 	except Exception:
 		put_info(flight, {}) # mark as not successful
