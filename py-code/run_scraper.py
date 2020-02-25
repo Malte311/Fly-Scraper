@@ -44,7 +44,7 @@ def is_done(id):
 		return today in data
 
 if __name__ == '__main__':
-	if os.environ['PROD'] == 'prod':
+	if os.environ.get('PROD') == 'prod':
 		DATA_FILE = '../php-code/data/entries.json'
 
 	run_scraper()

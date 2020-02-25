@@ -23,7 +23,12 @@ def get_info(flight):
 		info = {}
 		results = driver.find_elements_by_css_selector('.gws-flights-results__itinerary-card')
 		for res in results:
-			print(re.split('[\n\r]+', res))
+			data = re.split('[\n\r]+', res.text)
+			airline = data[1]
+			duration = data[2]
+			stops = data[4]
+			stay = data[5]
+			price = data[6]
 		
 	except Exception:
 		put_info(flight, {}) # mark as not successful
@@ -60,7 +65,7 @@ def write_log(msg):
 			file.write(f'{timestamp} \r\n {msg} \r\n')
 
 def path_prefix():
-	if os.environ['PROD'] == 'prod':
+	if os.environ.get('PROD') == 'prod':
 		return '../php-code/data/'
 	else:
 		return '../data/'
