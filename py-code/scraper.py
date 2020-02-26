@@ -146,7 +146,14 @@ def set_depart_and_return(driver, depart_date, return_date):
 	time.sleep(SLEEP_TIME)
 
 def fetch_results(driver):
-	time.sleep(1)
+	time.sleep(5)
+	try:
+		reload_btn = driver.find_element_by_css_selector('fill-button')
+		reload_btn.click() # Sometimes, the page has to be reloaded with the help of this button
+	except:
+		pass
+	
+	time.sleep(5)
 
 	results = []
 	flights = driver.find_elements_by_css_selector('.gws-flights-results__result-item')
@@ -159,16 +166,19 @@ def fetch_results(driver):
 				resObj['airlines'] = data[i].split(',')
 				continue
 			if re.search(r'(\d* Min|\d* h \d* Min)', data[i]) and not 'duration' in resObj:
-				resObj['duration'] = duration_str_to_mins(data[i])
+				resObj['duration'] = str(duration_str_to_mins(data[i]))
 				continue
-			if re.search(r'(.*stop|\d* Stopp.)', data[i]) and not 'stops' in resObj:
+			if re.search(r'(.*stop|\d* Stopp.*)', data[i]) and not 'stops' in resObj:
 				if re.search(r'(.*stop)', data[i]):
 					resObj['stops'] = str(0) # Match for "Nonstop"
 				else:
-					resObj['stops'] = re.search(r'\d* Stopp.', data[i]).group().strip()
+					resObj['stops'] = re.search(r'\d*', data[i]).group().strip()
+				continue
+			if re.search(r'(\d* Min.*|\d* h \d* Min.*)', data[i]) and not 'stay' in resObj:
+				resObj['stay'] = str(duration_str_to_mins(data[i]))
 				continue
 			if re.search(r'\d*\.?\d* €{1}', data[i]) and not 'price' in resObj:
-				resObj['price'] = re.sub('€', '', data[i]).strip()
+				resObj['price'] = re.sub(r'(€|\.)', '', data[i]).strip()
 				continue
 		
 		results.append(resObj)
@@ -176,8 +186,12 @@ def fetch_results(driver):
 	return results
 
 def duration_str_to_mins(duration_str):
-	mins = int(re.search(r'\d*', duration_str.split('h')[1].strip()).group())
-	hours = int(re.search(r'\d*', duration_str.split('h')[0].strip()).group())
+	if 'h' in duration_str: # Duration consists of hours (h) and minutes (min)
+		mins = int(re.search(r'\d*', duration_str.split('h')[1].strip()).group())
+		hours = int(re.search(r'\d*', duration_str.split('h')[0].strip()).group())
+	else: # Duration consists only of minutes (min), but no full hours (h)
+		mins = int(re.search(r'\d*', duration_str.strip()).group())
+		hours = 0
 	
 	return 60 * hours + mins
 

@@ -9,10 +9,9 @@ from scraper import get_info
 from scraper import write_log
 
 DATA_FILE = '../data/entries.json'
+DATA_PATH = '../data/'
 
 def run_scraper():
-	global DATA_FILE
-
 	if len(sys.argv) < 2 or not os.path.isfile(DATA_FILE):
 		exit()
 	
@@ -33,7 +32,7 @@ def run_scraper():
 				write_log(f'Error for id {str(flight["id"])}: \r\n {str(traceback.format_exc())}')
 
 def is_done(id):
-	file_name = str(id) + '.json'
+	file_name = DATA_PATH + str(id) + '.json'
 
 	if not os.path.isfile(file_name):
 		return False
@@ -46,5 +45,6 @@ def is_done(id):
 if __name__ == '__main__':
 	if os.environ.get('PROD') == 'prod':
 		DATA_FILE = '../php-code/data/entries.json'
+		DATA_PATH = '../php-code/data/'
 
 	run_scraper()
