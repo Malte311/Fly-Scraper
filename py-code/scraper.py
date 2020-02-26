@@ -10,12 +10,18 @@ from selenium.webdriver.chrome.options import Options
 def get_info(flight):
 	url = 'https://www.google.de/flights#flt=/m/03hrz.FNC.2020-05-03*FNC./m/03hrz.2020-05-31;c:EUR;e:1;sd:1;t:f'
 	chrome_options = Options()
-	chrome_options.add_argument("--headless")
+	#chrome_options.add_argument("--headless")
 	driver = webdriver.Chrome(executable_path='drivers/chromedriver', options=chrome_options)
 
 	try:
 		driver.get(url)
-		time.sleep(3)
+
+		set_travellers(driver, int(flight['travellers']))
+
+		print("Sleeping")
+		time.sleep(120)
+
+		set_cabin(driver, flight['cabin'])
 
 		results = []
 		flights = driver.find_elements_by_css_selector('.gws-flights-results__itinerary-card')
@@ -37,6 +43,46 @@ def get_info(flight):
 		raise Exception(f'No success for flight id {flight["id"]}')
 	finally:
 		driver.close()
+
+def set_travellers(driver, travellers):
+	menu = driver.find_elements_by_css_selector('.gws-flights-form__menu-label')
+
+	time.sleep(0.2)
+	menu[1].click() # Number of travellers
+
+	time.sleep(0.2)
+	inc = driver.find_element_by_css_selector('.gws-flights-widgets-numberpicker__flipper-increment')
+	for _i in range(travellers - 1):
+		parent = inc.find_element_by_xpath('..')
+		parent.click()
+		time.sleep(0.4)
+	
+	time.sleep(0.2)
+	driver.find_element_by_css_selector('.gws-flights__dialog-primary-button').click()
+
+	time.sleep(0.2)
+
+def set_cabin(driver, cabin_str):
+	menu = driver.find_elements_by_css_selector('.gws-flights-form__menu-label')
+
+	time.sleep(0.2)
+	menu[2].click() # Cabin class
+
+	time.sleep(0.2)
+	cabin = driver.find_elements_by_css_selector('.X4hwq.flt-subhead2')		
+	cabin[map_cabin(cabin_str)].click()
+
+	time.sleep(0.2)
+
+def map_cabin(cabin_str):
+	if 'first class' in cabin_str.lower():
+		return 3
+	elif 'business class' in cabin_str.lower():
+		return 2
+	elif 'premium economy' in cabin_str.lower():
+		return 1
+	else:
+		return 0
 
 def put_info(flight, info):
 	file_name = path_prefix() + str(flight['id']) + '.json'
