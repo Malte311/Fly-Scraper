@@ -6,6 +6,7 @@ import re
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
 
 SLEEP_TIME = 0.4
 
@@ -17,12 +18,11 @@ def get_info(flight):
 	try:
 		driver.get('https://www.google.de/flights')
 
-		#set_travellers(driver, int(flight['travellers']))
-		#set_cabin(driver, flight['cabin'])
-		#set_from(driver, flight['from'])
-		#set_to(driver, flight['to'])
-		set_depart(driver, flight['depart'])
-		#set_return(driver, flight['return'])
+		set_travellers(driver, int(flight['travellers']))
+		set_cabin(driver, flight['cabin'])
+		set_from(driver, flight['from'])
+		set_to(driver, flight['to'])
+		set_depart_and_return(driver, flight['depart'], flight['return'])
 
 		print("Sleeping")
 		time.sleep(120)
@@ -117,13 +117,35 @@ def set_to(driver, dest_airport):
 
 	time.sleep(SLEEP_TIME)
 
-def set_depart(driver, depart_date):
-	datepicker = driver.find_element_by_css_selector('.gws-flights-form__input-target')
+def set_depart_and_return(driver, depart_date, return_date):
+	datepicker = driver.find_elements_by_css_selector('.gws-flights-form__input-target')[2]
 	parent = datepicker.find_element_by_xpath('..')
-	parent.click()
-	time.sleep(SLEEP_TIME)
 
-def set_return(driver, return_date):
+	time.sleep(SLEEP_TIME)
+	parent.click()
+
+	time.sleep(SLEEP_TIME)
+	inputs = driver.find_elements_by_css_selector('.qCutsdOnIDY__date-input')
+	for i in range(2):
+		if i == 0:
+			date = depart_date
+		else:
+			date = return_date
+	
+		time.sleep(SLEEP_TIME)
+		inputs[i].click()
+		time.sleep(SLEEP_TIME)
+		inputs[i].send_keys(Keys.CONTROL + 'a')
+		time.sleep(SLEEP_TIME)
+		inputs[i].send_keys(Keys.DELETE)
+		time.sleep(SLEEP_TIME)
+		inputs[i].send_keys(date)
+		time.sleep(SLEEP_TIME)
+		inputs[i].send_keys(Keys.ENTER)
+		time.sleep(SLEEP_TIME)
+
+	driver.find_element_by_css_selector('.eE8hUfzg9Na__overlay').find_element_by_xpath('..').click()
+	
 	time.sleep(SLEEP_TIME)
 
 def fetch_results(driver):
