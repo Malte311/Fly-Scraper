@@ -12,7 +12,7 @@ SLEEP_TIME = 0.4
 
 def get_info(flight):
 	chrome_options = Options()
-	#chrome_options.add_argument("--headless")
+	chrome_options.add_argument("--headless")
 	driver = webdriver.Chrome(executable_path='drivers/chromedriver', options=chrome_options)
 
 	try:
@@ -24,13 +24,10 @@ def get_info(flight):
 		set_to(driver, flight['to'])
 		set_depart_and_return(driver, flight['depart'], flight['return'])
 
-		print("Sleeping")
-		time.sleep(120)
-
 		put_info(flight, fetch_results(driver))
 		
 	except Exception:
-		put_info(flight, {}) # mark as not successful
+		put_info(flight, []) # mark as not successful
 		raise Exception(f'No success for flight id {flight["id"]}')
 	finally:
 		driver.close()
@@ -149,20 +146,40 @@ def set_depart_and_return(driver, depart_date, return_date):
 	time.sleep(SLEEP_TIME)
 
 def fetch_results(driver):
+	time.sleep(1)
+
 	results = []
-	flights = driver.find_elements_by_css_selector('.gws-flights-results__itinerary-card')
+	flights = driver.find_elements_by_css_selector('.gws-flights-results__result-item')
 	for flightRes in flights:
-		print(flightRes.text)
 		resObj = {}
 		data = re.split('[\n\r]+', flightRes.text)
-		resObj['airline'] = data[1]
-		resObj['duration'] = data[2]
-		resObj['stops'] = data[4]
-		resObj['stay'] = data[5]
-		resObj['price'] = data[6]
+
+		for i in range(0, len(data)):
+			if re.search(r'^([^0-9]*)$', data[i]) and not 'airlines' in resObj:
+				resObj['airlines'] = data[i].split(',')
+				continue
+			if re.search(r'(\d* Min|\d* h \d* Min)', data[i]) and not 'duration' in resObj:
+				resObj['duration'] = duration_str_to_mins(data[i])
+				continue
+			if re.search(r'(.*stop|\d* Stopp.)', data[i]) and not 'stops' in resObj:
+				if re.search(r'(.*stop)', data[i]):
+					resObj['stops'] = str(0) # Match for "Nonstop"
+				else:
+					resObj['stops'] = re.search(r'\d* Stopp.', data[i]).group().strip()
+				continue
+			if re.search(r'\d*\.?\d* €{1}', data[i]) and not 'price' in resObj:
+				resObj['price'] = re.sub('€', '', data[i]).strip()
+				continue
+		
 		results.append(resObj)
 
 	return results
+
+def duration_str_to_mins(duration_str):
+	mins = int(re.search(r'\d*', duration_str.split('h')[1].strip()).group())
+	hours = int(re.search(r'\d*', duration_str.split('h')[0].strip()).group())
+	
+	return 60 * hours + mins
 
 def put_info(flight, info):
 	file_name = path_prefix() + str(flight['id']) + '.json'
