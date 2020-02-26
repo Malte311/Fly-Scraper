@@ -4,6 +4,7 @@ import random
 import sys
 import time
 import traceback
+from datetime import datetime
 from scraper import create_date
 from scraper import get_info
 from scraper import write_log
@@ -24,6 +25,9 @@ def run_scraper():
 				break
 
 			try:
+				if datetime.today().date() > datetime.strptime(flight['depart'], '%Y-%m-%d').date():
+					continue
+
 				if not is_done(flight['id']):
 					get_info(flight)
 					session_count += 1
