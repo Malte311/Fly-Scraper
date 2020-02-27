@@ -14,7 +14,10 @@ git clone git@github.com:Malte311/Fly-Scraper.git
 
 ```
 
-2. Adjust the `docker-compose.yml` file. Specify the correct server url and port.
+2. Adjust the `docker-compose.yml` file. Specify the correct server url and port. If you want
+to get notifications via email, you need a gmail account. Set the `MAIL_USER` variable to the
+sender email (has to be a gmail account) and `MAIL_PW` to the corresponding app password (not
+the "normal" password!). The receiving email address can use any email provider.
 
 ```yaml
 
