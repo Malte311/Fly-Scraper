@@ -33,10 +33,10 @@ services:
       - ./data/:/php-code/data/
     restart: always
     environment:
-	  - SERVERURL=https://example.com/fly-scraper
-	  - MAIL_USER=example@gmail.com
-	  - MAIL_PW=password
-	  - MAIL_RECEIVER=example@mail.com
+      - SERVERURL=https://example.com/fly-scraper
+      - MAIL_USER=example@gmail.com
+      - MAIL_PW=password
+      - MAIL_RECEIVER=example@mail.com
 
 ```
 
