@@ -155,7 +155,7 @@ def fetch_results(driver):
 	
 	time.sleep(5)
 
-	results = []
+	results = [{'url': driver.current_url}]
 	flights = driver.find_elements_by_css_selector('.gws-flights-results__result-item')
 	for flightRes in flights:
 		resObj = {}
