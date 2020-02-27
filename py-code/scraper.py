@@ -3,6 +3,7 @@ import json
 import os
 import random
 import re
+import smtplib
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -181,7 +182,8 @@ def fetch_results(driver):
 				resObj['price'] = re.sub(r'(€|\.)', '', data[i]).strip()
 				continue
 		
-		results.append(resObj)
+		if 'airlines' in resObj and 'price' in resObj:
+			results.append(resObj)
 
 	return results
 
@@ -207,6 +209,26 @@ def put_info(flight, info):
 	data[today] = info
 	with open(file_name, 'w+') as file:
 		json.dump(data, file, indent=4, sort_keys=True)
+
+	if len(info) < 2: # No results (either empty array or only 'url' entry)
+		return
+
+	lowest_price = min([i['price'] for i in info[1:]])
+	if float(lowest_price) < float(flight['threshold']):
+		send_notification(flight['from'], flight['to'], lowest_price, info[0]['url'])
+
+def send_notification(start, dest, price, link):
+	try:
+		server = smtplib.SMTP('smtp.gmail.com', 587)
+		server.ehlo()
+		server.starttls()
+		server.ehlo()
+		server.login(os.environ.get('MAIL_USER'), os.environ.get('MAIL_PW'))
+		msg = f'Subject: Price fell down\n\nFlight from {start} to {dest} for {price}€ now on {link}.'.encode('utf-8')
+		server.sendmail(os.environ.get('MAIL_USER'), os.environ.get('MAIL_RECEIVER'), msg)
+		server.quit()
+	except Exception as e:
+		write_log(f'Sending a notification failed!\r\n {e}')
 
 def create_date():
 	now = datetime.datetime.now()

@@ -142,7 +142,7 @@ function update_state(data) {
  * @param {array} data Array of JSON objects for each watchlist entry.
  */
 function show_watchlist(data) {
-	const header = ['from', 'to', 'depart', 'return', 'cabin', 'travellers'];
+	const header = ['from', 'to', 'depart', 'return', 'cabin', 'travellers', 'threshold'];
 	
 	let hrow = '';
 	for (col of header) {
