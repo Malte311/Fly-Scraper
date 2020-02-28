@@ -187,7 +187,7 @@ function add_entry($list) {
 		|| !is_string($_POST['return']) || !preg_match('/\d\d\d\d-\d\d-\d\d/', $_POST['return'])
 		|| !is_string($_POST['cabin']) || !in_array($_POST['cabin'], array('Economy', 'Premium Economy', 'Business class', 'First class'))
 		|| !is_numeric($_POST['travellers']) || preg_match('/[^0-9]/', $_POST['travellers']) || strlen($_POST['travellers']) > 1
-		|| !is_numeric($_POST['threshold']) || preg_match('/[^0-9]/', $_POST['threshold']) || strlen($_POST['threshold']) > 6
+		|| preg_match('/[^0-9]/', $_POST['threshold']) || strlen($_POST['threshold']) > 6
 	) {
 		return false;
 	}
@@ -203,7 +203,7 @@ function add_entry($list) {
 		'return' => $_POST['return'],
 		'cabin' => $_POST['cabin'],
 		'travellers' => $_POST['travellers'],
-		'threshold' => $_POST['threshold'],
+		'threshold' => strlen($_POST['threshold']) > 0 ? $_POST['threshold'] : 0
 	);
 
 	if (!file_exists($DATA_FILE)) {

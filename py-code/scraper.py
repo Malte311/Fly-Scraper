@@ -14,7 +14,12 @@ SLEEP_TIME = 0.4
 def get_info(flight):
 	chrome_options = Options()
 	chrome_options.add_argument("--headless")
-	driver = webdriver.Chrome(executable_path='drivers/chromedriver', options=chrome_options)
+	
+	if os.environ.get('PROD') == 'prod':
+		chrome_options.add_argument("--no-sandbox")
+		driver = webdriver.Chrome(options=chrome_options)
+	else:
+		driver = webdriver.Chrome(executable_path='drivers/chromedriver', options=chrome_options)
 
 	try:
 		driver.get('https://www.google.de/flights')
