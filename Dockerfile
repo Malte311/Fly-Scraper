@@ -1,6 +1,8 @@
 FROM kimbtechnologies/php_nginx:latest
 
 RUN apk add --update --no-cache python3 \
+	&& echo "http://dl-4.alpinelinux.org/alpine/v3.7/main" >> /etc/apk/repositories \
+	&& echo "http://dl-4.alpinelinux.org/alpine/v3.7/community" >> /etc/apk/repositories \
 	&& apk update \
 	&& apk add chromium \
 	&& apk add chromium-chromedriver \
