@@ -1,8 +1,10 @@
 FROM kimbtechnologies/php_nginx:latest
 
 RUN apk add --update --no-cache python3 \
-	&& pip3 install selenium \
+	&& apk update \
 	&& apk add chromium \
+	&& apk add chromium-chromedriver \
+	&& pip3 install selenium \
 	&& mkdir /py-code/ \
 	&& mkdir /py-code/drivers/ \
 	&& chown -R www-data:www-data /py-code/ \
