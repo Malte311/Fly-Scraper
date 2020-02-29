@@ -28,6 +28,9 @@ function handle_request() {
 				$param = 'fail_add';
 			}
 			break;
+		case 'data':
+			echo load_flight_info();
+			return;
 		case 'delete':
 			$param = delete_entry($_POST['id']) ? 'succ_del' : 'fail_del';
 			echo json_encode(file_get_contents($DATA_FILE));
@@ -243,6 +246,24 @@ function delete_entry($id) {
 
 		return true;
 	}
+}
+
+/**
+ * Loads available information for currently watched flights.
+ */
+function load_flight_info() {
+	$flight_info = array();
+
+	$entries = json_decode(file_get_contents($DATA_FILE), true);
+	foreach ($entries as $entry) {
+		$file = strval($entry['id']) . '.json';
+		if (file_exists($file)) {
+			$flight_info[] = json_decode(file_get_contents($file), true);
+		}
+	}
+
+	print_r($flight_info);
+	return json_encode($flight_info);
 }
 
 ?>

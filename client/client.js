@@ -1,4 +1,5 @@
-var global_data = {};
+var flights = {};
+var flight_info = {};
 
 $(function() {
 	'use strict';
@@ -25,8 +26,14 @@ async function load_page() {
 	let data = await Promise.resolve(
 		$.post(SERVERURL + '/action.php', $.param({'type': 'onload'}))
 	);
-	global_data = JSON.parse(data);
-	show_watchlist(global_data); // Loads all items from the watchlist
+	flights = typeof data === 'string' ? JSON.parse(data) : data;
+	show_watchlist(flights); // Loads all items from the watchlist
+
+	let info = await Promise.resolve(
+		$.post(SERVERURL + '/action.php', $.param({'type': 'data'}))
+	);
+	flight_info = typeof info === 'string' ? JSON.parse(info) : info;
+	show_flight_information(flight_info);
 }
 
 /**
@@ -61,7 +68,8 @@ function add_datepicker(startDate = null) {
  */
 function add_listener() {
 	$('#sel-list2').change(event => {
-		show_watchlist(global_data);
+		show_watchlist(flights);
+		show_flight_information(flight_info);
 	});
 }
 
@@ -178,6 +186,15 @@ function show_watchlist(data) {
 }
 
 /**
+ * Displays the flight information for each flight.
+ * 
+ * @param {array} flight_info Array of arrays of JSON objects for each flight.
+ */
+function show_flight_information(flight_info) {
+	console.log(flight_info);
+}
+
+/**
  * Renames the currently selected list.
  */
 function rename_list() {
@@ -236,8 +253,8 @@ function delete_entry(id) {
 			"id": id
 		};
 		$.post(SERVERURL + '/action.php', obj, data => {
-			global_data = JSON.parse(data);
-			show_watchlist(global_data);
+			flights = JSON.parse(data);
+			show_watchlist(flights);
 		});
 	}
 }
