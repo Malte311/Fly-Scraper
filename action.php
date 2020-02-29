@@ -19,7 +19,7 @@ function handle_request() {
 	$param = '';
 	switch($_POST['type']) {
 		case 'onload': // Load watchlist data
-			echo load_data($list);
+			echo load_data();
 			return;
 		case 'add': // Create new entry
 			try {
@@ -156,10 +156,9 @@ function delete_list($list) {
 
 /**
  * Loads available data.
- * @param int $list ID of the list which data should be loaded.
  * @return array Array of JSON objects for each entry.
  */
-function load_data($list) {
+function load_data() {
 	global $DATA_FILE;
 
 	if (!file_exists($DATA_FILE)) {
@@ -250,19 +249,22 @@ function delete_entry($id) {
 
 /**
  * Loads available information for currently watched flights.
+ * @return array Array of JSON objects for each entry.
  */
 function load_flight_info() {
+	global $DATA_FILE;
 	$flight_info = array();
 
 	$entries = json_decode(file_get_contents($DATA_FILE), true);
 	foreach ($entries as $entry) {
-		$file = strval($entry['id']) . '.json';
+		$file = __DIR__ . '/data/' . strval($entry['id']) . '.json';
 		if (file_exists($file)) {
-			$flight_info[] = json_decode(file_get_contents($file), true);
+			$info = json_decode(file_get_contents($file), true);
+			$info['id'] = strval($entry['id']);
+			$flight_info[] = $info;
 		}
 	}
 
-	print_r($flight_info);
 	return json_encode($flight_info);
 }
 

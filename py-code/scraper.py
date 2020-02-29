@@ -13,10 +13,10 @@ SLEEP_TIME = 0.4
 
 def get_info(flight):
 	chrome_options = Options()
-	chrome_options.add_argument("--headless")
+	chrome_options.add_argument('--headless')
 	
 	if os.environ.get('PROD') == 'prod':
-		chrome_options.add_argument("--no-sandbox")
+		chrome_options.add_argument('--no-sandbox')
 		driver = webdriver.Chrome(options=chrome_options)
 	else:
 		driver = webdriver.Chrome(executable_path='drivers/chromedriver', options=chrome_options)
@@ -86,7 +86,7 @@ def set_from(driver, origin_airport):
 	parent.click()
 
 	time.sleep(SLEEP_TIME)
-	input_field = driver.find_element_by_id('sb_ifc50').find_element_by_xpath(".//*")
+	input_field = driver.find_element_by_id('sb_ifc50').find_element_by_xpath('.//*')
 	time.sleep(SLEEP_TIME)
 	input_field.clear()
 	time.sleep(SLEEP_TIME)
@@ -107,7 +107,7 @@ def set_to(driver, dest_airport):
 	parent.click()
 
 	time.sleep(SLEEP_TIME)
-	input_field = driver.find_element_by_id('sb_ifc50').find_element_by_xpath(".//*")
+	input_field = driver.find_element_by_id('sb_ifc50').find_element_by_xpath('.//*')
 	time.sleep(SLEEP_TIME)
 	input_field.clear()
 	time.sleep(SLEEP_TIME)
@@ -242,7 +242,7 @@ def create_date():
 
 def write_log(msg):
 	log_file = path_prefix() + 'log.log'
-	timestamp = datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
+	timestamp = datetime.datetime.now().strftime('%d-%m-%Y %H:%M')
 	if not os.path.isfile(log_file):
 		with open(log_file, 'w+') as file:
 			file.write(f'{timestamp} \r\n {msg} \r\n')

@@ -188,7 +188,7 @@ function show_watchlist(data) {
 /**
  * Displays the flight information for each flight.
  * 
- * @param {array} flight_info Array of arrays of JSON objects for each flight.
+ * @param {array} flight_info Array of JSON objects for each flight.
  */
 function show_flight_information(flight_info) {
 	console.log(flight_info);
