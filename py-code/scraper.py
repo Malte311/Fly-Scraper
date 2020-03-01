@@ -13,7 +13,7 @@ SLEEP_TIME = 0.4
 
 def get_info(flight):
 	chrome_options = Options()
-	chrome_options.add_argument('--headless')
+	#chrome_options.add_argument('--headless')
 	
 	if os.environ.get('PROD') == 'prod':
 		chrome_options.add_argument('--no-sandbox')
@@ -44,16 +44,49 @@ def set_preferences(driver):
 	footer = driver.find_elements_by_css_selector('.gws-flights__footer-picker')
 	
 	time.sleep(SLEEP_TIME)
+	footer[0].click() # set language to german
+	time.sleep(SLEEP_TIME)
+	languages = driver.find_elements_by_css_selector('.gws-flights__footer-column-item')
+	time.sleep(SLEEP_TIME)
+	for i in range(0, len(languages)):
+		if 'gws-flights__footer-selected-item' in languages[i].get_attribute('class').split():
+			footer[0].click() # Close menu again because the correct value is already chosen
+			break
+
+		if 'deutsch' in languages[i].text.lower():
+			languages[i].click()
+			break
+
+	time.sleep(3 * SLEEP_TIME)
+	footer[1].click() # set country to germany
+	time.sleep(SLEEP_TIME)
+	countries = driver.find_elements_by_css_selector('.gws-flights__footer-column-item')
+	time.sleep(SLEEP_TIME)
+	for i in range(0, len(countries)):
+		if 'gws-flights__footer-selected-item' in countries[i].get_attribute('class').split():
+			footer[1].click()
+			break
+
+		# language is already german, so we use the german word 'deutschland' instead of 'germany'
+		if 'deutschland' in countries[i].text.lower():
+			countries[i].click()
+			break
+
+	time.sleep(3 * SLEEP_TIME)
 	footer[2].click() # set currency to euro
 	time.sleep(SLEEP_TIME)
 	currencies = driver.find_elements_by_css_selector('.gws-flights__footer-column-item')
 	time.sleep(SLEEP_TIME)
 	for i in range(0, len(currencies)):
+		if 'gws-flights__footer-selected-item' in currencies[i].get_attribute('class').split():
+			footer[2].click()
+			break
+		
 		if 'eur' in currencies[i].text.lower():
 			currencies[i].click()
 			break
 
-	time.sleep(SLEEP_TIME)
+	time.sleep(5 * SLEEP_TIME)
 
 def set_travellers(driver, travellers):
 	menu = driver.find_elements_by_css_selector('.gws-flights-form__menu-label')
@@ -176,7 +209,7 @@ def fetch_results(driver):
 	except:
 		pass
 	
-	time.sleep(5)
+	time.sleep(10)
 
 	results = [{'url': driver.current_url}]
 	flights = driver.find_elements_by_css_selector('.gws-flights-results__result-item')
