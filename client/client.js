@@ -191,7 +191,35 @@ function show_watchlist(data) {
  * @param {array} flight_info Array of JSON objects for each flight.
  */
 function show_flight_information(flight_info) {
-	console.log(flight_info);
+	$('#div-infos').html('');
+	
+	for (flight of flight_info) {
+		let entry = flights.find(value => value['id'] === flight['id']);
+		// Only display information for flights in the currently selected list
+		if (parseInt(entry['list']) === parseInt($('#sel-list2').val())) {
+			let url = flight[Object.keys(flight)[0]][0].url;
+			let text = `${entry.from} &ndash; ${entry.to}`;
+			let title = `<h5><a class="text-dark" href="${url}" target="_blank">${text}</a></h5>`;
+			let time = `Depart: ${entry.depart}, Return: ${entry.return}`;
+			let passenger = `${entry.cabin}, ${entry.travellers} travellers`;
+			let canvas = `<canvas id="${entry.id}-1" width="500" height="300">`;
+			
+			let html = '<div>' + title + time + '<br>' + passenger + '<br>' + canvas + '</div>';
+			$('#div-infos').append(html);
+			
+			show_charts(entry.id, flight);
+		}
+	}
+}
+
+/**
+ * Displays the charts for given flights.
+ * 
+ * @param {string} canvas_id The ID of the canvas in which the charts should be created.
+ * @param {object} flight_data JSON object containing the data to be visualized.
+ */
+function show_charts(canvas_id, flight_data) {
+	console.log(flight_data)
 }
 
 /**
