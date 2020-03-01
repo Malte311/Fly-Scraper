@@ -192,7 +192,6 @@ function show_watchlist(data) {
  */
 function show_flight_information(flight_info) {
 	$('#div-infos').html('');
-	
 	for (flight of flight_info) {
 		let entry = flights.find(value => value['id'] === flight['id']);
 		// Only display information for flights in the currently selected list
@@ -202,24 +201,54 @@ function show_flight_information(flight_info) {
 			let title = `<h5><a class="text-dark" href="${url}" target="_blank">${text}</a></h5>`;
 			let time = `Depart: ${entry.depart}, Return: ${entry.return}`;
 			let passenger = `${entry.cabin}, ${entry.travellers} travellers`;
-			let canvas = `<canvas id="${entry.id}-1" width="500" height="300">`;
+			let canvas = `<canvas id="${entry.id}" width="500" height="300">`;
 			
 			let html = '<div>' + title + time + '<br>' + passenger + '<br>' + canvas + '</div>';
 			$('#div-infos').append(html);
 			
-			show_charts(entry.id, flight);
+			show_chart(flight);
 		}
 	}
 }
 
 /**
- * Displays the charts for given flights.
+ * Displays the chart for given flights.
  * 
- * @param {string} canvas_id The ID of the canvas in which the charts should be created.
  * @param {object} flight_data JSON object containing the data to be visualized.
  */
-function show_charts(canvas_id, flight_data) {
-	console.log(flight_data)
+function show_chart(flight_data) {
+	let bd_colors = ['rgba(80, 189, 255, 1)', 'rgba(0, 204, 0, 1)', 'rgba(255, 99, 132, 0.2)'];
+	let bg_colors = ['rgba(80, 189, 255, 0.2)', 'rgba(0, 204, 0, 0.2)', 'rgba(255, 99, 132, 1)'];
+
+	let datasets = {};
+	for (let data of Object.keys(flight_data)) {
+		if (/^\d\d\d\d-\d\d-\d\d$/.test(data)) {
+			// Index 0 has only the 'url' attribute, so we start at 1
+			for (let i = 1; i < flight_data[data].length && i < bd_colors.length; i++) {
+				let f = flight_data[data][i];
+				let key = `${f.airlines.reduce((p, c) => p + c, '')}${f.time}${f.duration}${f.stay}${f.stops}`;
+
+				if (key in datasets) {
+					datasets[key]['data'].push(parseInt(f.price));
+				} else {
+					datasets[key] = {
+						backgroundcolor: bg_colors[i - 1],
+						borderColor: bd_colors[i - 1],
+						data: [parseInt(f.price)],
+						label: `${f.airlines.join(', ')}`
+					};
+				}
+			}
+		}
+	}
+	
+	new Chart(flight_data['id'], {
+		type: 'line',
+		data: {
+			labels: Object.keys(flight_data).filter(val => /^\d\d\d\d-\d\d-\d\d$/.test(val)),
+			datasets: Object.values(datasets)
+		}
+	});
 }
 
 /**
