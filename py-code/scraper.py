@@ -168,6 +168,9 @@ def fetch_results(driver):
 		data = re.split('[\n\r]+', flightRes.text)
 
 		for i in range(0, len(data)):
+			if re.search(r'.*\d\d:\d\d bis \d\d:\d\d.*', data[i]) and not 'time' in resObj:
+				resObj['time'] = data[i]
+				continue
 			if re.search(r'^([^0-9]*)$', data[i]) and not 'airlines' in resObj:
 				resObj['airlines'] = data[i].split(',')
 				continue
@@ -177,6 +180,7 @@ def fetch_results(driver):
 			if re.search(r'(.*stop|\d* Stopp.*)', data[i]) and not 'stops' in resObj:
 				if re.search(r'(.*stop)', data[i]):
 					resObj['stops'] = str(0) # Match for "Nonstop"
+					resObj['stay'] = str(0) # There is no stay for nonstop
 				else:
 					resObj['stops'] = re.search(r'\d*', data[i]).group().strip()
 				continue
