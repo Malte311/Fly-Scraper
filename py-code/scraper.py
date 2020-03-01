@@ -13,7 +13,7 @@ SLEEP_TIME = 0.4
 
 def get_info(flight):
 	chrome_options = Options()
-	#chrome_options.add_argument('--headless')
+	chrome_options.add_argument('--headless')
 	
 	if os.environ.get('PROD') == 'prod':
 		chrome_options.add_argument('--no-sandbox')

@@ -1,8 +1,11 @@
 # Fly-Scraper
 
-> Work in progress... (currently, the program is not doing anything useful!)
+A simple tool to track prices on google flights.
+> Note: The tool is designed for the german website of google flights and might not work for other
+> languages.
 >
-> Also remember that you should not make this service publicly available on your server (because input fields are not protected)!
+> Also remember that you should not make this service publicly available on your server (because
+> input fields are not protected)!
 
 ## Installation (via Docker)
 
