@@ -217,25 +217,30 @@ function show_flight_information(flight_info) {
  * @param {object} flight_data JSON object containing the data to be visualized.
  */
 function show_chart(flight_data) {
-	let bd_colors = ['rgba(80, 189, 255, 1)', 'rgba(0, 204, 0, 1)', 'rgba(255, 99, 132, 0.2)'];
-	let bg_colors = ['rgba(80, 189, 255, 0.2)', 'rgba(0, 204, 0, 0.2)', 'rgba(255, 99, 132, 1)'];
+	let colors = [
+		'rgba(80, 189, 255, 1)', 'rgba(0, 204, 0, 1)', 'rgba(255, 99, 132, 1)',
+		'rgba(255, 165, 0, 1)', 'rgba(255, 215, 0, 1)', 'rgba(106, 90, 205, 1)',
+		'rgba(0, 100, 0, 1)', 'rgba(30, 144, 255, 1)', 'rgba(138, 43, 226, 1)',
+		'rgba(238, 130, 238, 1)', 'rgba(255, 0, 0, 1)', 'rgba(0, 0, 255, 1)'
+	];
 
 	let datasets = {};
 	for (let data of Object.keys(flight_data)) {
 		if (/^\d\d\d\d-\d\d-\d\d$/.test(data)) {
 			// Index 0 has only the 'url' attribute, so we start at 1
-			for (let i = 1; i < flight_data[data].length && i < bd_colors.length; i++) {
+			for (let i = 1; i < flight_data[data].length; i++) {
 				let f = flight_data[data][i];
-				let key = `${f.airlines.reduce((p, c) => p + c, '')}${f.time}${f.duration}${f.stay}${f.stops}`;
+				let key = `${f.airlines.join(', ')}${f.time}${f.duration}${f.stay}${f.stops}`;
 
 				if (key in datasets) {
 					datasets[key]['data'].push(parseInt(f.price));
 				} else {
 					datasets[key] = {
-						backgroundcolor: bg_colors[i - 1],
-						borderColor: bd_colors[i - 1],
+						backgroundColor: colors[(i - 1) % colors.length],
+						borderColor: colors[(i - 1) % colors.length],
 						data: [parseInt(f.price)],
-						label: `${f.airlines.join(', ')}`
+						label: `${f.airlines.join(', ')}`,
+						fill: false
 					};
 				}
 			}
