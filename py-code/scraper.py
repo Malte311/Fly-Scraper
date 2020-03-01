@@ -23,6 +23,7 @@ def get_info(flight):
 
 	try:
 		driver.get('https://www.google.de/flights')
+		set_preferences(driver)
 
 		set_travellers(driver, int(flight['travellers']))
 		set_cabin(driver, flight['cabin'])
@@ -37,6 +38,22 @@ def get_info(flight):
 		raise Exception(f'No success for flight id {flight["id"]}')
 	finally:
 		driver.close()
+
+def set_preferences(driver):
+	# footer[0]: language, footer[1]: country, footer[2]: currency
+	footer = driver.find_elements_by_css_selector('.gws-flights__footer-picker')
+	
+	time.sleep(SLEEP_TIME)
+	footer[2].click() # set currency to euro
+	time.sleep(SLEEP_TIME)
+	currencies = driver.find_elements_by_css_selector('.gws-flights__footer-column-item')
+	time.sleep(SLEEP_TIME)
+	for i in range(0, len(currencies)):
+		if 'eur' in currencies[i].text.lower():
+			currencies[i].click()
+			break
+
+	time.sleep(SLEEP_TIME)
 
 def set_travellers(driver, travellers):
 	menu = driver.find_elements_by_css_selector('.gws-flights-form__menu-label')
