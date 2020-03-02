@@ -9,9 +9,10 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 
+MAX_ATTEMPTS = 2
 SLEEP_TIME = 0.4
 
-def get_info(flight):
+def get_info(flight, attempts = 0):
 	chrome_options = Options()
 	chrome_options.add_argument('--headless')
 	
@@ -23,6 +24,7 @@ def get_info(flight):
 
 	try:
 		driver.get('https://www.google.de/flights')
+		time.sleep(2 * SLEEP_TIME)
 		set_preferences(driver)
 
 		set_travellers(driver, int(flight['travellers']))
@@ -34,13 +36,20 @@ def get_info(flight):
 		put_info(flight, fetch_results(driver))
 		
 	except Exception:
-		put_info(flight, []) # mark as not successful
-		raise Exception(f'No success for flight id {flight["id"]}')
+		# Try again until maximum number of attempts is reached, then throw exception
+		attempts = attempts + 1
+		if attempts <= MAX_ATTEMPTS:
+			get_info(flight, attempts)
+		else:
+			put_info(flight, []) # mark as not successful
+			raise Exception(f'No success for flight id {flight["id"]}')
 	finally:
 		driver.close()
 
 def set_preferences(driver):
 	# footer[0]: language, footer[1]: country, footer[2]: currency
+	driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
+	time.sleep(SLEEP_TIME)
 	footer = driver.find_elements_by_css_selector('.gws-flights__footer-picker')
 	
 	time.sleep(SLEEP_TIME)
@@ -86,10 +95,12 @@ def set_preferences(driver):
 			currencies[i].click()
 			break
 
+	time.sleep(2 * SLEEP_TIME)
+	driver.execute_script('window.scrollTo(0, 0);')
 	time.sleep(5 * SLEEP_TIME)
 
 def set_travellers(driver, travellers):
-	menu = driver.find_elements_by_css_selector('.gws-flights-form__menu-label')
+	menu = driver.find_elements_by_css_selector('.gws-flights-form__menu-button')
 
 	time.sleep(SLEEP_TIME)
 	menu[1].click() # Number of travellers
