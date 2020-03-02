@@ -196,7 +196,10 @@ function show_flight_information(flight_info) {
 		let entry = flights.find(value => value['id'] === flight['id']);
 		// Only display information for flights in the currently selected list
 		if (parseInt(entry['list']) === parseInt($('#sel-list2').val())) {
-			let url = flight[Object.keys(flight)[0]][0].url;
+			let url_key = Object.keys(flight).find(key => flight[key][0].url !== undefined);
+			if (url_key === undefined) continue;
+			
+			let url = flight[url_key][0].url;
 			let text = `${entry.from} &ndash; ${entry.to}`;
 			let title = `<h5><a class="text-dark" href="${url}" target="_blank">${text}</a></h5>`;
 			let time = `Depart: ${entry.depart}, Return: ${entry.return}`;
