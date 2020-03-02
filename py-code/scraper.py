@@ -12,7 +12,7 @@ from selenium.webdriver.common.keys import Keys
 MAX_ATTEMPTS = 2
 SLEEP_TIME = 0.4
 
-def get_info(flight, attempts = 0):
+def get_info(flight, attempts = 1):
 	chrome_options = Options()
 	chrome_options.add_argument('--headless')
 	
@@ -67,6 +67,7 @@ def set_preferences(driver):
 
 	time.sleep(3 * SLEEP_TIME)
 	driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
+	footer = driver.find_elements_by_css_selector('.gws-flights__footer-picker')
 	time.sleep(SLEEP_TIME)
 	footer[1].click() # set country to germany
 	time.sleep(SLEEP_TIME)
@@ -83,6 +84,7 @@ def set_preferences(driver):
 
 	time.sleep(3 * SLEEP_TIME)
 	driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
+	footer = driver.find_elements_by_css_selector('.gws-flights__footer-picker')
 	time.sleep(SLEEP_TIME)
 	footer[2].click() # set currency to euro
 	time.sleep(SLEEP_TIME)
