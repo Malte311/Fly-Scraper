@@ -228,25 +228,34 @@ function show_chart(flight_data) {
 	];
 
 	let datasets = {};
+	let color_index = 0;
+	let count = 0;
 	for (let data of Object.keys(flight_data)) {
 		if (/^\d\d\d\d-\d\d-\d\d$/.test(data)) {
 			// Index 0 has only the 'url' attribute, so we start at 1
 			for (let i = 1; i < flight_data[data].length; i++) {
 				let f = flight_data[data][i];
-				let key = `${f.airlines.join(', ')}${f.time}${f.duration}${f.stay}${f.stops}`;
+				let key = `${f.airlines.join(', ')}${f.time}`;
 
 				if (key in datasets) {
+					for (let i = 0; i < Math.abs(count - datasets[key]['data'].length); i++) {
+						datasets[key]['data'].push(null);
+					}
 					datasets[key]['data'].push(parseInt(f.price));
 				} else {
 					datasets[key] = {
-						backgroundColor: colors[(i - 1) % colors.length],
-						borderColor: colors[(i - 1) % colors.length],
-						data: [parseInt(f.price)],
+						backgroundColor: colors[color_index % colors.length],
+						borderColor: colors[color_index % colors.length],
+						data: count > 0 ?
+							[...(new Array(count).fill(null)), parseInt(f.price)] :
+							[parseInt(f.price)],
 						label: `${f.airlines.join(', ')}`,
 						fill: false
 					};
+					color_index++;
 				}
 			}
+			count++;
 		}
 	}
 	
