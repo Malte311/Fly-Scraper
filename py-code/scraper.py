@@ -58,42 +58,43 @@ def set_preferences(driver):
 	languages = driver.find_elements_by_css_selector('.gws-flights__footer-column-item')
 	time.sleep(SLEEP_TIME)
 	for i in range(0, len(languages)):
-		if 'gws-flights__footer-selected-item' in languages[i].get_attribute('class').split():
-			footer[0].click() # Close menu again because the correct value is already chosen
-			break
-
 		if 'deutsch' in languages[i].text.lower():
-			languages[i].click()
-			break
+			if 'gws-flights__footer-selected-item' in languages[i].get_attribute('class').split():
+				footer[0].click() # Close menu again because the correct value is already chosen
+			else:
+				languages[i].click()
+				break
 
 	time.sleep(3 * SLEEP_TIME)
+	driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
+	time.sleep(SLEEP_TIME)
 	footer[1].click() # set country to germany
 	time.sleep(SLEEP_TIME)
 	countries = driver.find_elements_by_css_selector('.gws-flights__footer-column-item')
 	time.sleep(SLEEP_TIME)
 	for i in range(0, len(countries)):
-		if 'gws-flights__footer-selected-item' in countries[i].get_attribute('class').split():
-			footer[1].click()
-			break
-
 		# language is already german, so we use the german word 'deutschland' instead of 'germany'
 		if 'deutschland' in countries[i].text.lower():
-			countries[i].click()
-			break
+			if 'gws-flights__footer-selected-item' in countries[i].get_attribute('class').split():
+				footer[1].click()
+			else:
+				countries[i].click()
+				break
 
 	time.sleep(3 * SLEEP_TIME)
+	driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
+	time.sleep(SLEEP_TIME)
 	footer[2].click() # set currency to euro
 	time.sleep(SLEEP_TIME)
 	currencies = driver.find_elements_by_css_selector('.gws-flights__footer-column-item')
 	time.sleep(SLEEP_TIME)
 	for i in range(0, len(currencies)):
-		if 'gws-flights__footer-selected-item' in currencies[i].get_attribute('class').split():
-			footer[2].click()
-			break
-		
 		if 'eur' in currencies[i].text.lower():
-			currencies[i].click()
-			break
+			if 'gws-flights__footer-selected-item' in currencies[i].get_attribute('class').split():
+				footer[2].click()
+			else:
+				currencies[i].click()
+				break
 
 	time.sleep(2 * SLEEP_TIME)
 	driver.execute_script('window.scrollTo(0, 0);')
