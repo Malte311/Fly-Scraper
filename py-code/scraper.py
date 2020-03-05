@@ -192,17 +192,18 @@ def set_depart_and_return(driver, depart_date, return_date):
 	time.sleep(SLEEP_TIME)
 
 def fetch_results(driver):
-	time.sleep(5)
+	time.sleep(10)
 	try:
 		reload_btn = driver.find_element_by_css_selector('fill-button')
 		reload_btn.click() # Sometimes, the page has to be reloaded with the help of this button
 	except:
 		pass
 	
-	time.sleep(10)
+	time.sleep(30)
 
 	results = [{'url': driver.current_url}]
 	flights = driver.find_elements_by_css_selector('.gws-flights-results__result-item')
+	time.sleep(SLEEP_TIME)
 	for flightRes in flights:
 		resObj = {}
 		data = re.split('[\n\r]+', flightRes.text)
