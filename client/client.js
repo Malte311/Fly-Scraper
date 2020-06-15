@@ -204,7 +204,7 @@ function show_flight_information(flight_info) {
 			let title = `<h5><a class="text-dark" href="${url}" target="_blank">${text}</a></h5>`;
 			let time = `Depart: ${entry.depart}, Return: ${entry.return}`;
 			let passenger = `${entry.cabin}, ${entry.travellers} travellers`;
-			let canvas = `<canvas id="${entry.id}" width="500" height="300">`;
+			let canvas = `<canvas id="${entry.id}" width="500" height="500">`;
 			
 			let html = '<div>' + title + time + '<br>' + passenger + '<br>' + canvas + '</div>';
 			$('#div-infos').append(html);

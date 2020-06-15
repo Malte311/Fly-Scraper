@@ -2,6 +2,7 @@
 header( 'Content-type: application/json; charset=utf-8' );
 
 $DATA_FILE = __DIR__ . '/data/entries.json';
+$DATA_LIMIT = 10;
 
 handle_request();
 
@@ -259,7 +260,7 @@ function load_flight_info() {
 	foreach ($entries as $entry) {
 		$file = __DIR__ . '/data/' . strval($entry['id']) . '.json';
 		if (file_exists($file)) {
-			$info = json_decode(file_get_contents($file), true);
+			$info = filter_flight_info(json_decode(file_get_contents($file), true));
 			$info['id'] = strval($entry['id']);
 			$flight_info[] = $info;
 		}
@@ -268,4 +269,41 @@ function load_flight_info() {
 	return json_encode($flight_info);
 }
 
+/**
+ * Filters flight information such that the amount of sent data does not get too large.
+ * @param array $flight_info The flight information to be filtered.
+ * @return array The filtered flight information.
+ */
+function filter_flight_info($flight_info) {
+	global $DATA_LIMIT;
+
+	$filter_keys = array();
+	foreach ($flight_info[array_key_last($flight_info)] as $key => $val) {
+		if (isset($val['airlines']) && isset($val['time'])) {
+			$filter_keys[] = implode(', ', $val['airlines']) . $val['time'];
+		}
+
+		if ($DATA_LIMIT <= $key + 1) {
+			break;
+		}
+	}
+
+	$filtered_info = array();
+	foreach ($flight_info as $key => $val) {		
+		$filtered_info[$key] = array();
+		foreach ($val as $entry) {
+			if (!isset($entry['airlines']) && !isset($entry['time'])) {
+				$filtered_info[$key][] = $entry;
+			} else {
+				$composed_key = implode(', ', $entry['airlines']) . $entry['time'];
+
+				if (in_array($composed_key, $filter_keys)) {
+					$filtered_info[$key][] = $entry;
+				}
+			}
+		}
+	}
+
+	return $filtered_info;
+}
 ?>
