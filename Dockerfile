@@ -1,6 +1,6 @@
 FROM kimbtechnologies/php_nginx:latest
 
-RUN apk add --update --no-cache python3 \
+RUN apk add --update --no-cache python3 py3-pip \
 	&& echo "http://dl-4.alpinelinux.org/alpine/v3.7/main" >> /etc/apk/repositories \
 	&& echo "http://dl-4.alpinelinux.org/alpine/v3.7/community" >> /etc/apk/repositories \
 	&& apk update \
