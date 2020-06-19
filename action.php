@@ -278,7 +278,8 @@ function filter_flight_info($flight_info) {
 	global $DATA_LIMIT;
 
 	$filter_keys = array();
-	foreach ($flight_info[array_key_last($flight_info)] as $key => $val) {
+	$latest_info = get_last_not_empty($flight_info);
+	foreach ($latest_info as $key => $val) {
 		if (isset($val['airlines']) && isset($val['time'])) {
 			$filter_keys[] = implode(', ', $val['airlines']) . $val['time'];
 		}
@@ -305,5 +306,24 @@ function filter_flight_info($flight_info) {
 	}
 
 	return $filtered_info;
+}
+
+/**
+ * Returns the latest flight information. If no information exists, it returns an empty array.
+ * @param array $array The flight information array.
+ * @return array The latest flight information.
+ */
+function get_last_not_empty(array $array) : array {
+	$last = end($array);
+
+	while (empty($last)) {
+		$last = prev($array);
+
+		if ($last === false && key($array) === NULL) {
+			return array();
+		}
+	}
+
+	return $last;
 }
 ?>
