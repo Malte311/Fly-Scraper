@@ -184,8 +184,8 @@ function add_entry($list) {
 		return false;
 	}
 
-	if (!is_string($_POST['from']) || preg_match('/[^a-zA-Z ]/', $_POST['from']) || strlen($_POST['from']) > 50
-		|| !is_string($_POST['to']) || preg_match('/[^a-zA-Z ]/', $_POST['to']) || strlen($_POST['to']) > 50
+	if (!is_string($_POST['from']) || preg_match('/[^a-zA-Zöäüß ]/', $_POST['from']) || strlen($_POST['from']) > 50
+		|| !is_string($_POST['to']) || preg_match('/[^a-zA-Zöäüß ]/', $_POST['to']) || strlen($_POST['to']) > 50
 		|| !is_string($_POST['depart']) || !preg_match('/\d\d\d\d-\d\d-\d\d/', $_POST['depart'])
 		|| !is_string($_POST['return']) || !preg_match('/\d\d\d\d-\d\d-\d\d/', $_POST['return'])
 		|| !is_string($_POST['cabin']) || !in_array($_POST['cabin'], array('Economy', 'Premium Economy', 'Business class', 'First class'))
